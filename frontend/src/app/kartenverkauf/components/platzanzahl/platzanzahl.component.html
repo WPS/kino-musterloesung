@@ -1,0 +1,21 @@
+<div class="card card-border m-4 shadow-md bg-gray-50">
+  <div class="card-body items-center">
+    @if (fertig) {
+      <p class="italic">Sie haben folgende Platzanzahl gewählt:</p>
+      <p class="card-title">{{ platzanzahlControl.value }}</p>
+    } @else {
+      <p class="italic">Wie viele Plätze benötigen Sie?</p>
+      <select class="select w-40" [formControl]="platzanzahlControl">
+        <option disabled selected [value]="null">bitte wählen</option>
+        @for (anzahl of anzahlOptions; track anzahl) {
+          <option [value]="anzahl">{{ anzahl }}</option>
+        }
+      </select>
+      <div class="card-actions">
+        <button class="btn btn-sm btn-primary" (click)="uebermittlePlatzanzahl()"
+          [disabled]="platzanzahlControl.disabled">Anzahl bestätigen
+        </button>
+      </div>
+    }
+  </div>
+</div>

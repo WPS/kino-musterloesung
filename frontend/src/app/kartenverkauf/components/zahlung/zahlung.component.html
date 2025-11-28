@@ -1,0 +1,31 @@
+<div class="card card-border m-4 shadow-md bg-gray-50">
+  <div class="card-body items-center">
+    @if (fertig && zahlungsvorgang) {
+      <p class="italic">Sie haben folgenden Betrag bezahlt:</p>
+      <p class="card-title">
+        {{ zahlungsvorgang.betrag.betrag | geldbetrag }} {{ zahlungsvorgang.betrag.waehrung }}
+      </p>
+    } @else {
+      <p class="italic">Zu zahlender Betrag:</p>
+      @if (gesamtbetrag) {
+        <p class="card-title">
+          {{ gesamtbetrag.betrag | geldbetrag }} {{ gesamtbetrag.waehrung }}
+        </p>
+        <div class="card-actions">
+          <button class="btn btn-sm btn-primary" (click)="oeffneZahlungDialog()">
+            Weiter zur Zahlung
+          </button>
+        </div>
+      } @else {
+        <div class="loading loading-dots loading-sm"></div>
+      }
+    }
+  </div>
+</div>
+
+  <app-zahlungdialog
+    #zahlungDialog
+    class="w-full"
+    (onDialogGeschlossen)="zahlungDialogGeschlossen($event)"
+  />
+

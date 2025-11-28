@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<analyzerConfiguration version="14.0.1.868" analyzer="ArchitectureCheck">
+	<stringEntry value="" name="./FachlicheSchichtung.arc"></stringEntry>
+	<stringEntry value="" name="./Mustersprache.arc"></stringEntry>
+	<stringEntry value="" name="./TechnischeSchichtung.arc"></stringEntry>
+</analyzerConfiguration>

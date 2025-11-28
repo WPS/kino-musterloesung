@@ -1,0 +1,21 @@
+services:
+  backend:
+    image: kinosoft/backend:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  frontend:
+    image: kinosoft/frontend:latest
+    ports:
+      - "8081:80"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<ns2:softwareSystem xmlns:ns2="http://www.hello2morrow.com/sonargraph/core" id="5f9b4f5d1dbbf602830d8b394ccc8914" version="14.0.1.868">
+	<description></description>
+	<module xmlns:ns4="http://www.hello2morrow.com/sonargraph/languageprovider/java" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:xsdJavaModule" name="backend" id="83fbe55d681cb8f1ee1cabe9954932ae" language="Java">
+		<description></description>
+		<rootPath name="./backend/target/classes"></rootPath>
+		<rootPath xsi:type="ns4:xsdSourceRootPath" name="./backend/target/generated-sources/annotations"></rootPath>
+		<rootPath xsi:type="ns4:xsdSourceRootPath" name="./backend/src/main/java"></rootPath>
+	</module>
+</ns2:softwareSystem>

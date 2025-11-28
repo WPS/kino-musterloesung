@@ -1,0 +1,14 @@
+<div class="flex justify-center">
+  <div class="join m-4" role="radiogroup" aria-label="Wochentage">
+    @for (datum of selectableDates; track datum) {
+      <button class="join-item btn btn-secondary btn-soft p-8"
+        (click)="selectDate(datum)"
+        [disabled]="isBeforeToday(datum)"
+        role="radio"
+        [attr.aria-checked]="selectedDate.toDateString() === datum.toDateString()"
+        [ngClass]="{'btn-active': selectedDate.toDateString() === datum.toDateString()}">
+        {{ datum | date:'EE' }}<br/>{{ datum | date:'dd.MM.' }}
+      </button>
+    }
+  </div>
+</div>

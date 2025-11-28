@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: kinosoft
+    service: backend
+spec:
+  selector:
+    matchLabels:
+      app: kinosoft
+      service: backend
+  template:
+    metadata:
+      labels:
+        app: kinosoft
+        service: backend
+    spec:
+      containers:
+        - name: backend
+          image: gitlab.wps.de:5001/wps/ddd-schulung-musterloesung/kinosoft/backend:1.0.0
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: wps-container-registry
+

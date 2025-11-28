@@ -1,0 +1,31 @@
+<div class="card card-side card-border m-4 shadow-md bg-gray-50">
+  <figure class="flex-1/4">
+    <img src="{{film.posterUrl}}" alt="{{film.titel}}">
+  </figure>
+  <div class="card-body flex-3/4">
+    <h2 class="card-title">{{ film.titel }}</h2>
+    <div class="flex flex-row gap-1 text-info-content">
+      <span>FSK {{ film.fsk }}</span>
+      <span>⋅</span>
+      <span>{{ film.laufzeit | durationFormat }}</span>
+      <span>⋅</span>
+      <span>{{ film.genre }}</span>
+    </div>
+    <p>{{ film.beschreibung }}</p>
+    <div class="flex flex-row gap-1 text-info-content">
+      <span>Regie: {{ film.regie }}</span>
+      <span>⋅</span>
+      <span>Hauptdarsteller*innen: {{ film.hauptdarsteller }}</span>
+      <span>⋅</span>
+      <span>{{ film.sprache }}</span>
+    </div>
+    <div class="card-actions">
+      @for (vorstellung of film.vorstellungen; track vorstellung) {
+        <button class="btn btn-primary mt-3 min-w-32 min-h-20"
+          (click)="waehleVorstellung(vorstellung.uuid)">
+          {{ vorstellung.beginn | date:'HH:mm' }} <br/> {{ vorstellung.saal }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

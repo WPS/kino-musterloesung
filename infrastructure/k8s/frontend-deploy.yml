@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: kinosoft
+    service: frontend
+spec:
+  selector:
+    matchLabels:
+      app: kinosoft
+      service: frontend
+  template:
+    metadata:
+      labels:
+        app: kinosoft
+        service: frontend
+    spec:
+      containers:
+        - name: backend
+          image: gitlab.wps.de:5001/wps/ddd-schulung-musterloesung/kinosoft/frontend:1.0.0
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: wps-container-registry
+

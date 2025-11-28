@@ -1,0 +1,9 @@
+<app-navbar title="Programm"/>
+
+<app-kalender (dateSelected)="waehleDatum($event)"/>
+
+<div class="flex flex-col">
+  @for (film of filme; track film) {
+    <app-programmeintrag [film]="film"/>
+  }
+</div>

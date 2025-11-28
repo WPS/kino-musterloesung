@@ -1,0 +1,32 @@
+<div class="card card-border m-4 shadow-md bg-gray-50">
+  <div class="card-body items-center">
+    <p class="italic">Herzlichen Glückwunsch! Hier sind Ihre Kinokarten:</p>
+    @if (kinokarten) {
+      <div class="cursor-pointer mt-3 mb-4"
+        [ngClass]="stacked ? 'stack' :'grid grid-cols-2 gap-4'"
+        (click)="toggleStacked()">
+        @for (kinokarte of kinokarten; track kinokarte) {
+          <div>
+            <div class="card card-side card-dash rounded-md shadow-sm items-center bg-white">
+              <div class="card-body">
+                <p>{{ kinokarte.film }}</p>
+                <p>{{ kinokarte.beginn | date : 'dd.MM.yyyy HH:mm' }} Uhr</p>
+                <p>{{ kinokarte.saal }}</p>
+                <p>Reihe {{ kinokarte.reihe }} Platz {{ kinokarte.platz }}</p>
+              </div>
+              <figure class="mr-4">
+                <img class="h-32 w-32" src="assets/qr-code.png" alt="https://www.wps.de"/>
+              </figure>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-sm btn-primary" (click)="druckeKinokarten()">Kinokarten drucken</button>
+      </div>
+    } @else {
+      <div class="loading loading-dots loading-sm"></div>
+    }
+  </div>
+</div>
+

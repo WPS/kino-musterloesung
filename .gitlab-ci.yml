@@ -1,0 +1,77 @@
+stages:
+  - build
+  - test
+
+.backend:
+  image: maven:3.9.11-eclipse-temurin-21
+  cache:
+    - key: m2_cache
+      paths:
+        - .m2/repository
+  variables:
+    MAVEN_OPTS: >-
+      -Dhttps.protocols=TLSv1.2
+      -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+      -Dorg.slf4j.simpleLogger.showDateTime=true
+      -Djava.awt.headless=true
+    MAVEN_CLI_OPTS: >-
+      --batch-mode
+      --errors
+      --fail-at-end
+      --show-version
+      --no-transfer-progress
+      --no-snapshot-updates
+      -DinstallAtEnd=true
+      -DdeployAtEnd=true
+
+.frontend:
+  image: node:22.15.0
+  before_script:
+    - cd frontend
+    - npm ci --cache .npm
+  cache:
+    - key: npm_cache
+      paths:
+        - frontend/.npm/
+
+build:backend:
+  extends: .backend
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS -pl backend compile
+  artifacts:
+    paths:
+      - backend/target/
+    expire_in: 1 hour
+
+build:frontend:
+  extends: .frontend
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 hour
+
+test:backend:
+  extends: .backend
+  stage: test
+  dependencies:
+    - build:backend
+  script:
+    - mvn $MAVEN_CLI_OPTS -pl backend test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - backend/target/surefire-reports/TEST-*.xml
+
+test:frontend:
+  extends: .frontend
+  image: trion/ng-cli-karma
+  stage: test
+  dependencies:
+    - build:frontend
+  script:
+    - npm run test:ci
