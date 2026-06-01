@@ -20,12 +20,13 @@ describe('ZahlungComponent', () => {
 
     fixture = TestBed.createComponent(ZahlungComponent);
     component = fixture.componentInstance;
-    component.vorstellung = {
+    fixture.componentRef.setInput('vorstellung', {
       uuid: '123e4567-e89b-12d3-a456-426614174000',
       beginn: '2025-03-16T20:00:00',
       saal: 'Saal 1',
       film: 'Inception',
-    };
+    });
+    fixture.componentRef.setInput('plaetze', {plaetze: [{reihe: 1, platz: 2}]});
     fixture.detectChanges();
   });
 

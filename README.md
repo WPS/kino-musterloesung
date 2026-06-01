@@ -96,7 +96,7 @@ basieren (fachliche Schnitte). Je Bounded Context kann ein eigener, auf die funk
 Anforderungen zurechtgeschnittener, Architekturstil gewählt werden, in diesem Fall eine Schichtenarchitektur und eine
 hexagonale Architektur:
 
-- Filmauswahl: eine simple **Schichtenarchitektur** unter direkter Verwendung der Spring Boot Boardmittel:
+- Filmauswahl: eine simple **Schichtenarchitektur** unter direkter Verwendung der Spring Boot Bordmittel:
   RestController, Service, Repository, Entity (DTO, Domain-Entity, JPA-Entity in Einem).
 - Kartenverkauf: eine **hexagonale Architektur** (Ports and Adapters) mit DDD-Bausteinen im fachlichen Kern und eigenen
   Modellen in den Adaptern (DTOs, JPA-Entities, und entsprechende Mapper).

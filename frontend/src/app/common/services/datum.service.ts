@@ -5,9 +5,6 @@ import {addDays, startOfWeek} from 'date-fns';
   providedIn: 'root'
 })
 export class DatumService {
-  
-  constructor() {
-  }
 
   getWochentage(date: Date) {
     const monday = startOfWeek(date, {weekStartsOn: 1});

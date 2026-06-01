@@ -20,13 +20,13 @@ describe('SaalplanComponent', () => {
 
     fixture = TestBed.createComponent(SaalplanComponent);
     component = fixture.componentInstance;
-    component.vorstellung = {
+    fixture.componentRef.setInput('vorstellung', {
       uuid: '123e4567-e89b-12d3-a456-426614174000',
       beginn: '2025-03-16T20:00:00',
       saal: 'Saal 1',
       film: 'Inception',
-    };
-    component.platzanzahl = 4;
+    });
+    fixture.componentRef.setInput('platzanzahl', 4);
     fixture.detectChanges();
   });
 

@@ -19,7 +19,7 @@ describe('ProgrammeintragComponent', () => {
 
     fixture = TestBed.createComponent(ProgrammeintragComponent);
     component = fixture.componentInstance;
-    component.film = {
+    fixture.componentRef.setInput('film', {
       id: 1,
       titel: 'Inception',
       laufzeit: 148,
@@ -45,7 +45,7 @@ describe('ProgrammeintragComponent', () => {
           saal: 'Saal 2',
         },
       ],
-    };
+    });
     fixture.detectChanges();
   });
 

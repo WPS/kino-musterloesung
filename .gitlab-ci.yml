@@ -3,7 +3,7 @@ stages:
   - test
 
 .backend:
-  image: maven:3.9.11-eclipse-temurin-21
+  image: maven:3.9.11-eclipse-temurin-25
   cache:
     - key: m2_cache
       paths:
@@ -25,7 +25,7 @@ stages:
       -DdeployAtEnd=true
 
 .frontend:
-  image: node:22.15.0
+  image: node:24.11.0
   before_script:
     - cd frontend
     - npm ci --cache .npm
@@ -69,7 +69,6 @@ test:backend:
 
 test:frontend:
   extends: .frontend
-  image: trion/ng-cli-karma
   stage: test
   dependencies:
     - build:frontend

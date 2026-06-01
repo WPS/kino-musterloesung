@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -7,7 +7,6 @@ import {Component, Input} from '@angular/core';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-   @Input()
-   title: string = "n/a";
+   readonly title = input<string>("n/a");
 
 }

@@ -15,8 +15,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <node.version>v22.15.0</node.version>
-    <npm.version>11.3.0</npm.version>
+    <node.version>v24.11.0</node.version>
+    <npm.version>11.6.1</npm.version>
     <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
     <fabric8.version>0.46.0</fabric8.version>
   </properties>

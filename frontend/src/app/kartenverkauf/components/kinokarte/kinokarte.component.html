@@ -1,11 +1,11 @@
 <div class="card card-border m-4 shadow-md bg-gray-50">
   <div class="card-body items-center">
     <p class="italic">Herzlichen Glückwunsch! Hier sind Ihre Kinokarten:</p>
-    @if (kinokarten) {
+    @if (kinokarten(); as karten) {
       <div class="cursor-pointer mt-3 mb-4"
-        [ngClass]="stacked ? 'stack' :'grid grid-cols-2 gap-4'"
+        [class]="stacked() ? 'stack' : 'grid grid-cols-2 gap-4'"
         (click)="toggleStacked()">
-        @for (kinokarte of kinokarten; track kinokarte) {
+        @for (kinokarte of karten; track kinokarte) {
           <div>
             <div class="card card-side card-dash rounded-md shadow-sm items-center bg-white">
               <div class="card-body">

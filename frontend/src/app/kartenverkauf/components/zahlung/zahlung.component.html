@@ -1,15 +1,15 @@
 <div class="card card-border m-4 shadow-md bg-gray-50">
   <div class="card-body items-center">
-    @if (fertig && zahlungsvorgang) {
+    @if (fertig() && zahlungsvorgang(); as z) {
       <p class="italic">Sie haben folgenden Betrag bezahlt:</p>
       <p class="card-title">
-        {{ zahlungsvorgang.betrag.betrag | geldbetrag }} {{ zahlungsvorgang.betrag.waehrung }}
+        {{ z.betrag.betrag | geldbetrag }} {{ z.betrag.waehrung }}
       </p>
     } @else {
       <p class="italic">Zu zahlender Betrag:</p>
-      @if (gesamtbetrag) {
+      @if (gesamtbetrag(); as g) {
         <p class="card-title">
-          {{ gesamtbetrag.betrag | geldbetrag }} {{ gesamtbetrag.waehrung }}
+          {{ g.betrag | geldbetrag }} {{ g.waehrung }}
         </p>
         <div class="card-actions">
           <button class="btn btn-sm btn-primary" (click)="oeffneZahlungDialog()">

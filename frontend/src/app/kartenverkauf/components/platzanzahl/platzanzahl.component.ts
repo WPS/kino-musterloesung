@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, input, output, signal} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {isPresent} from '../../../common/utils';
 
@@ -11,17 +11,14 @@ import {Vorstellung} from '../../dtos/kartenverkauf';
 ],
   templateUrl: './platzanzahl.component.html',
   styleUrl: './platzanzahl.component.css',
-  standalone: true,
 })
 export class PlatzanzahlComponent {
 
-  @Input() vorstellung!: Vorstellung;
+  readonly vorstellung = input.required<Vorstellung>();
 
-  @Output()
-  onPlatzanzahlBestaetigt: EventEmitter<number> = new EventEmitter();
+  readonly onPlatzanzahlBestaetigt = output<number>();
 
-  @Output()
-  onReset: EventEmitter<void> = new EventEmitter();
+  readonly onReset = output<void>();
 
   maxAnzahl: number = 10 // TODO get from backend for vorstellung
   anzahlOptions: number[] = Array.from({length: this.maxAnzahl}, (_, i) => i + 1);
@@ -29,14 +26,14 @@ export class PlatzanzahlComponent {
   platzanzahlControl: FormControl<number | null> = new FormControl<number | null>(null,
     [Validators.required, Validators.min(1), Validators.max(this.maxAnzahl)]);
 
-  fertig: boolean = false;
+  readonly fertig = signal(false);
 
   uebermittlePlatzanzahl() {
     if (!isPresent(this.platzanzahlControl.value)) {
       return;
     }
-    this.fertig = true;
-    this.onPlatzanzahlBestaetigt.emit(this.platzanzahlControl.value);
+    this.fertig.set(true);
+    this.onPlatzanzahlBestaetigt.emit(Number(this.platzanzahlControl.value));
   }
 
 }

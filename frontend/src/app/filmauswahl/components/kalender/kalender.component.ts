@@ -1,5 +1,6 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import {Component, DestroyRef, inject, OnInit, output, signal} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {DatePipe} from '@angular/common';
 import {DatumService} from '../../../common/services/datum.service';
 import {format, isBefore, startOfDay} from 'date-fns';
 import {ActivatedRoute, Params, Router} from '@angular/router';
@@ -10,38 +11,36 @@ import {FormsModule} from '@angular/forms';
   selector: 'app-kalender',
   imports: [
     DatePipe,
-    FormsModule,
-    NgClass
+    FormsModule
 ],
-  providers: [DatePipe],
   templateUrl: './kalender.component.html',
   styleUrl: './kalender.component.css'
 })
 export class KalenderComponent implements OnInit {
+  private datumService = inject(DatumService);
+  private router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
-  constructor(private datumService: DatumService, private router: Router, private readonly activatedRoute: ActivatedRoute) {
+  readonly today: Date = startOfDay(new Date("2025-03-19"));
 
-  }
+  readonly selectableDates = signal<Date[]>([this.today]);
 
-  today: Date = startOfDay(new Date("2025-03-19"));
+  readonly selectedDate = signal<Date>(this.today);
 
-  selectableDates: Date[] = [this.today];
-
-  selectedDate: Date = this.today;
-
-  @Output()
-  dateSelected = new EventEmitter<Date>();
+  readonly dateSelected = output<Date>();
 
   ngOnInit(): void {
-    this.selectableDates = this.datumService.getWochentage(this.today);
+    this.selectableDates.set(this.datumService.getWochentage(this.today));
     this.activatedRoute.queryParamMap.pipe(
       map((queryParamMap) => queryParamMap.get('datum')),
       map((value) => value ? new Date(value) : this.today),
-      distinctUntilChanged())
+      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(value => {
-        this.selectedDate = value ?? this.today;
-        this.selectedDate = startOfDay(this.selectedDate);
-        this.dateSelected.emit(this.selectedDate);
+        const day = startOfDay(value ?? this.today);
+        this.selectedDate.set(day);
+        this.dateSelected.emit(day);
       });
   }
 

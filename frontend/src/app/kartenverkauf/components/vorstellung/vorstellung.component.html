@@ -1,18 +1,18 @@
 <div class="card card-border m-4 shadow-md bg-gray-50">
   <div class="card-body items-center">
       <p class="italic">Sie haben folgende Vorstellung gewählt:</p>
-    @if (vorstellung) {
+    @if (vorstellung(); as v) {
       <div class="card-title">
-        {{ vorstellung.film }}
+        {{ v.film }}
       </div>
       <div class="text-info-content">
-        {{ vorstellung.beginn | date : 'EEEE' }}
+        {{ v.beginn | date : 'EEEE' }}
         <span>⋅</span>
-        {{ vorstellung.beginn | date : 'dd.MM.yyyy' }}
+        {{ v.beginn | date : 'dd.MM.yyyy' }}
         <span>⋅</span>
-        {{ vorstellung.beginn | date : 'HH:mm' }} Uhr
+        {{ v.beginn | date : 'HH:mm' }} Uhr
         <span>⋅</span>
-        {{ vorstellung.saal }}
+        {{ v.saal }}
       </div>
     } @else {
       <div class="loading loading-dots loading-sm"></div>

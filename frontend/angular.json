@@ -11,16 +11,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "customWebpackConfig": {
-              "path": "./webpack-build.config.js"
-            },
             "outputPath": "dist/frontend",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
-              "zone.js",
               "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
@@ -60,7 +56,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "proxyConfig": "src/proxy.conf.json"
           },
@@ -78,25 +74,10 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing",
-              "@angular/localize/init"
-            ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": [],
-            "karmaConfig": "karma.conf.js"
+            "buildTarget": "frontend:build:development"
           }
         }
       },

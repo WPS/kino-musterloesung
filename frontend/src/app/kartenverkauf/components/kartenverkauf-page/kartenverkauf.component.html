@@ -4,40 +4,40 @@
   <div class="flex-1"></div>
   <div class="flex-auto">
     <div class="flex flex-col items-center">
-      @if (zeigeVorstellungAktiv || zeigeVorstellungFertig) {
-        <app-badge text="Vorstellung wählen" [checked]="zeigeVorstellungFertig"/>
+      @if (zeigeVorstellungAktiv() || zeigeVorstellungFertig()) {
+        <app-badge text="Vorstellung wählen" [checked]="zeigeVorstellungFertig()"/>
         <app-vorstellung class="w-lg"
-                         [vorstellungId]="vorstellungId!"
+                         [vorstellungId]="vorstellungId()!"
                          (onVorstellungGeladen)="vorstellungGeladen($event)"
         />
       }
-      @if (zeigePlatzanzahlAktiv || zeigePlatzanzahlFertig) {
-        <app-badge text="Kartenanzahl wählen" [checked]="zeigePlatzanzahlFertig"/>
+      @if (zeigePlatzanzahlAktiv() || zeigePlatzanzahlFertig()) {
+        <app-badge text="Kartenanzahl wählen" [checked]="zeigePlatzanzahlFertig()"/>
         <app-platzanzahl class="w-lg"
-                         [vorstellung]="gewaehlteVorstellung!"
+                         [vorstellung]="gewaehlteVorstellung()!"
                          (onPlatzanzahlBestaetigt)="platzanzahlGewaehlt($event)"
         />
       }
-      @if (zeigePlatzwahlAktiv || zeigePlatzwahlFertig) {
-        <app-badge text="Plätze wählen" [checked]="zeigePlatzwahlFertig"/>
+      @if (zeigePlatzwahlAktiv() || zeigePlatzwahlFertig()) {
+        <app-badge text="Plätze wählen" [checked]="zeigePlatzwahlFertig()"/>
         <app-saalplan class="min-w-lg w-auto"
-                      [vorstellung]="gewaehlteVorstellung!"
-                      [platzanzahl]="gewaehltePlatzanzahl!"
+                      [vorstellung]="gewaehlteVorstellung()!"
+                      [platzanzahl]="gewaehltePlatzanzahl()!"
                       (onPlatzwahlBestaetigt)="plaetzeGewaehlt($event)"
         />
       }
-      @if (zeigeZahlungAktiv || zeigeZahlungFertig) {
-        <app-badge text="Kinokarten zahlen" [checked]="zeigeZahlungFertig"/>
+      @if (zeigeZahlungAktiv() || zeigeZahlungFertig()) {
+        <app-badge text="Kinokarten zahlen" [checked]="zeigeZahlungFertig()"/>
         <app-zahlung class="w-lg"
-                     [vorstellung]="gewaehlteVorstellung!"
-                     [plaetze]="gewaehltePlaetze!"
+                     [vorstellung]="gewaehlteVorstellung()!"
+                     [plaetze]="gewaehltePlaetze()!"
                      (onZahlungBestaetigt)="zahlungBestaetigt($event)"
         />
       }
-      @if (zeigeKinokartenAktiv || zeigeKinokartenFertig) {
-        <app-badge text="Kinokarten drucken" [checked]="zeigeKinokartenFertig"/>
+      @if (zeigeKinokartenAktiv() || zeigeKinokartenFertig()) {
+        <app-badge text="Kinokarten drucken" [checked]="zeigeKinokartenFertig()"/>
         <app-kinokarte class="min-w-lg w-auto"
-                       [zahlungsbestaetigung]="zahlungsbestaetigung!"
+                       [zahlungsbestaetigung]="zahlungsbestaetigung()!"
                        (onKinokartenGedruckt)="kinokartenGedruckt($event)"
         />
       }

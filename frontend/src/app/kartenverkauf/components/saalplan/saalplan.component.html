@@ -1,45 +1,41 @@
 <div class="card card-border m-4 shadow-md bg-gray-50">
-  @if (fertig) {
+  @if (fertig()) {
     <div class="card-body items-center">
       <p class="italic">Sie haben folgende Plätze gewählt:</p>
-      <p class="card-title">{{ plaetzeString }}</p>
+      <p class="card-title">{{ plaetzeString() }}</p>
     </div>
   } @else {
     <div class="card-body items-center">
-      @if (plaetzeGeladen) {
-        @if (plaetzeGefunden) {
+      @if (plaetzeGeladen()) {
+        @if (plaetzeGefunden()) {
           <p class="italic">Wo möchten Sie sitzen?</p>
         } @else {
-          <p class="text-error">Es konnten leider keine {{ platzanzahl }} zusammenhängende Plätze gefunden werden.</p>
+          <p class="text-error">Es konnten leider keine {{ platzanzahl() }} zusammenhängende Plätze gefunden werden.</p>
         }
       } @else {
         <div class="loading loading-dots loading-sm"></div>
       }
-      @if (saalplanGeladen) {
-        <svg class="border" [attr.height]="saalplanHoehe" [attr.width]="saalplanBreite">
-          <rect [attr.width]="leinwandBreite"
-            [attr.x]="leinwandPosition"
+      @if (saalplanGeladen()) {
+        <svg class="border" [attr.height]="saalplanHoehe()" [attr.width]="saalplanBreite()">
+          <rect [attr.width]="leinwandBreite()"
+            [attr.x]="leinwandPosition()"
             height="16"
             fill="white"
             stroke="black"
             />
-          @for (platzbelegungenProReihe of platzbelegungenReihe; track platzbelegungenProReihe; let rowIndex = $index) {
-            <ng-container>
-              @for (platz of platzbelegungenProReihe; track platz; let columnIndex = $index) {
-                <ng-container>
-                  <circle
-                    [attr.cx]="getStartX(platzbelegungenProReihe) + columnIndex * spacing"
-                    [attr.cy]="startY + rowIndex * rowSpacing"
-                    [attr.r]="radius"
-                    [attr.fill]="getFarbeFuerPlatzbelegung(platz)"
-                    stroke="black"
-                    (mouseenter)="platzEnter(rowIndex, columnIndex)"
-                    (mouseleave)="platzLeave()"
-                    (click)="platzClick(rowIndex, columnIndex)"
-                    />
-                </ng-container>
-              }
-            </ng-container>
+          @for (platzbelegungenProReihe of platzbelegungenReihe(); track platzbelegungenProReihe; let rowIndex = $index) {
+            @for (platz of platzbelegungenProReihe; track platz; let columnIndex = $index) {
+              <circle
+                [attr.cx]="getStartX(platzbelegungenProReihe) + columnIndex * spacing"
+                [attr.cy]="startY + rowIndex * rowSpacing"
+                [attr.r]="radius"
+                [attr.fill]="getFarbeFuerPlatzbelegung(platz)"
+                stroke="black"
+                (mouseenter)="platzEnter(rowIndex, columnIndex)"
+                (mouseleave)="platzLeave()"
+                (click)="platzClick(rowIndex, columnIndex)"
+                />
+            }
           }
         </svg>
       } @else {
@@ -47,7 +43,7 @@
       }
       <div class="card-actions">
         <button class="btn btn-sm btn-primary"
-          [disabled]="gewaehltePlaetze === undefined || gewaehltePlaetze.plaetze.length === 0"
+          [disabled]="gewaehltePlaetze() === undefined || gewaehltePlaetze()!.plaetze.length === 0"
           (click)="platzwahlBestaetigen()">
           Platzauswahl bestätigen
         </button>

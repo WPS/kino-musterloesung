@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {
@@ -16,11 +16,9 @@ import {
   providedIn: 'root'
 })
 export class KartenverkaufService {
+  private http = inject(HttpClient);
 
   private kartenverkaufUrl: string = '/api/kartenverkauf';
-
-  constructor(private http: HttpClient) {
-  }
 
   public holeVorstellung(vorstellungId: string): Observable<Vorstellung> {
     return this.http.get<Vorstellung>(`${this.kartenverkaufUrl}/vorstellungen/${vorstellungId}`);

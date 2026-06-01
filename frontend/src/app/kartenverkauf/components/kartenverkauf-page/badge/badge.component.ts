@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input} from '@angular/core';
 
 @Component({
   selector: 'app-badge',
@@ -7,10 +7,8 @@ import {Component, Input} from '@angular/core';
 })
 export class BadgeComponent {
 
-  @Input()
-  text: string = "";
+  readonly text = input<string>("");
 
-  @Input()
-  checked: boolean = false;
+  readonly checked = input<boolean>(false);
 
 }

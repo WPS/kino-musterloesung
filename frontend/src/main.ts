@@ -1,5 +1,5 @@
 import {bootstrapApplication} from '@angular/platform-browser';
-import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClient, withFetch} from '@angular/common/http';
 import {appConfig} from './app/app.config';
 import {AppComponent} from './app/app.component';
 import {registerLocaleData} from '@angular/common';
@@ -10,7 +10,7 @@ registerLocaleData(de);
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
     {provide: LOCALE_ID, useValue: 'de'},
     ...appConfig.providers
   ]

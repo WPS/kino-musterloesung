@@ -1,4 +1,5 @@
-import {Component} from '@angular/core';
+import {Component, DestroyRef, inject, signal} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ProgrammService} from '../../services/programm.service';
 import {Film} from '../../dtos/programm';
 import {KalenderComponent} from '../kalender/kalender.component';
@@ -16,20 +17,16 @@ import {NavbarComponent} from '../../../common/components/navbar/navbar.componen
 ],
   templateUrl: './programm.component.html',
   styleUrl: './programm.component.css',
-  standalone: true,
 })
 export class ProgrammComponent {
+  private programmService = inject(ProgrammService);
+  private destroyRef = inject(DestroyRef);
 
-  filme?: Film[];
-
-  constructor(private programmService: ProgrammService) {
-  }
+  readonly filme = signal<Film[] | undefined>(undefined);
 
   waehleDatum(datum: Date) {
-    this.programmService.holeProgramm(format(datum, "yyyy-MM-dd")).subscribe(
-      data => {
-        this.filme = data;
-      }
-    )
+    this.programmService.holeProgramm(format(datum, "yyyy-MM-dd"))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(data => this.filme.set(data));
   }
 }

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, output, signal, viewChild} from '@angular/core';
 import {GeldbetragPipe} from '../../../services/geldbetrag.pipe';
 import {Zahlungsvorgang} from '../../../dtos/kartenverkauf';
 
@@ -12,22 +12,20 @@ import {Zahlungsvorgang} from '../../../dtos/kartenverkauf';
 })
 export class ZahlungdialogComponent {
 
-  zahlungvorgang: Zahlungsvorgang | undefined;
+  readonly zahlungvorgang = signal<Zahlungsvorgang | undefined>(undefined);
 
-  @Output()
-  onDialogGeschlossen = new EventEmitter<Zahlungsvorgang>();
+  readonly onDialogGeschlossen = output<Zahlungsvorgang>();
 
-  @ViewChild('zahlungDialogModal')
-  dialogRef!: ElementRef<HTMLDialogElement>;
+  readonly dialogRef = viewChild.required<ElementRef<HTMLDialogElement>>('zahlungDialogModal');
 
   oeffneDialog(zahlungsvorgang: Zahlungsvorgang): void {
-    this.zahlungvorgang = zahlungsvorgang;
-    this.dialogRef.nativeElement.showModal();
+    this.zahlungvorgang.set(zahlungsvorgang);
+    this.dialogRef().nativeElement.showModal();
   }
 
   schliesseDialog(): void {
-    this.dialogRef.nativeElement.close();
-    this.onDialogGeschlossen.emit(this.zahlungvorgang);
+    this.dialogRef().nativeElement.close();
+    this.onDialogGeschlossen.emit(this.zahlungvorgang()!);
   }
 
 }

@@ -1,5 +1,6 @@
 package de.wps.ddd.kino.kartenverkauf.adapters.secondary.persistence.repositories;
 
+import de.wps.ddd.kino.common.error.RessourceNichtGefunden;
 import de.wps.ddd.kino.kartenverkauf.adapters.secondary.persistence.mappers.SaalplanEntityMapper;
 import de.wps.ddd.kino.kartenverkauf.adapters.secondary.persistence.model.SaalplanEntity;
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.Saalplan;
@@ -7,7 +8,6 @@ import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.Vorstellun
 import de.wps.ddd.kino.kartenverkauf.application.ports.secondary.SaalplanStapel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 @Component
 @AllArgsConstructor
@@ -18,7 +18,7 @@ public class SaalplanStapelImpl implements SaalplanStapel {
 
     public Saalplan holeSaalplan(VorstellungId vorstellungId) {
         SaalplanEntity saalplanEntity = saalplanRepository.findByVorstellungUUID(vorstellungId.uuid());
-        Assert.notNull(saalplanEntity, "Saalplan zu Vorstellung " + vorstellungId + " existiert nicht");
+        RessourceNichtGefunden.throwIf(saalplanEntity == null, "Saalplan zu Vorstellung " + vorstellungId + " existiert nicht");
         return saalplanMapper.toDomain(saalplanEntity);
     }
 

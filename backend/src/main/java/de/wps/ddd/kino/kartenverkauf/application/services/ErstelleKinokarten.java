@@ -1,5 +1,6 @@
 package de.wps.ddd.kino.kartenverkauf.application.services;
 
+import de.wps.ddd.kino.common.error.GeschaeftsregelVerletzt;
 import de.wps.ddd.kino.kartenverkauf.application.domain.kartenverkauf.KartenBlock;
 import de.wps.ddd.kino.kartenverkauf.application.domain.kartenverkauf.Kinokarte;
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.ZusammenhaengendePlaetze;
@@ -12,7 +13,6 @@ import de.wps.ddd.kino.kartenverkauf.application.ports.secondary.SaalplanStapel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ class ErstelleKinokarten implements de.wps.ddd.kino.kartenverkauf.application.po
 
     @Override
     public List<Kinokarte> fuer(Auftragsnummer auftragsnummer, VorstellungId vorstellungId, ZusammenhaengendePlaetze gewaehltePlaetze) {
-        Assert.isTrue(zahlung.status(auftragsnummer).equals(Zahlungsstatus.Eingegangen), "Zahlung ist noch nicht eingegangen");
+        GeschaeftsregelVerletzt.throwIf(zahlung.status(auftragsnummer) != Zahlungsstatus.Eingegangen, "Zahlung ist noch nicht eingegangen");
         var vorstellung = aktuelleVorstellungen.holeVorstellung(vorstellungId);
         var kinokarten = kartenBlock.erstelleKarten(vorstellung, gewaehltePlaetze);
         var saalplan = saalplanStapel.holeSaalplan(vorstellungId);

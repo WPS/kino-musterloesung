@@ -9,8 +9,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
@@ -19,13 +21,16 @@ import java.util.List;
 @AggregateRoot
 @Entity
 @Table(name = "filme", schema = "filmauswahl")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Film {
     @Identity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
+    @EqualsAndHashCode.Include
     private Long id;
     private String titel;
     private Integer laufzeit;

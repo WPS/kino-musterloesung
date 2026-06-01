@@ -19,6 +19,7 @@ describe('VorstellungComponent', () => {
 
     fixture = TestBed.createComponent(VorstellungComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('vorstellungId', '123e4567-e89b-12d3-a456-426614174000');
     fixture.detectChanges();
   });
 

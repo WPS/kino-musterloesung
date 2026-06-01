@@ -1,6 +1,6 @@
 <div class="card card-border m-4 shadow-md bg-gray-50">
   <div class="card-body items-center">
-    @if (fertig) {
+    @if (fertig()) {
       <p class="italic">Sie haben folgende Platzanzahl gewählt:</p>
       <p class="card-title">{{ platzanzahlControl.value }}</p>
     } @else {

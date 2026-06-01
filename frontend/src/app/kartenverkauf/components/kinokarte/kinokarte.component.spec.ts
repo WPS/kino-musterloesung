@@ -20,7 +20,7 @@ describe('KinokarteComponent', () => {
 
     fixture = TestBed.createComponent(KinokarteComponent);
     component = fixture.componentInstance;
-    component.zahlungsbestaetigung = {
+    fixture.componentRef.setInput('zahlungsbestaetigung', {
       auftragsnummer: 'A-2025-000123',
       vorstellungId: '123e4567-e89b-12d3-a456-426614174000',
       plaetze: {plaetze: [{reihe: 1, platz: 2}]},
@@ -28,7 +28,7 @@ describe('KinokarteComponent', () => {
         betrag: 36.0,
         waehrung: Waehrung.EUR,
       },
-    };
+    });
     fixture.detectChanges();
   });
 

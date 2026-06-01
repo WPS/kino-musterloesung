@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit, input, output, signal, viewChild} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {
   Geldbetrag,
   Vorstellung,
@@ -20,48 +21,47 @@ import {KartenverkaufService} from '../../services/kartenverkauf.service';
   styleUrl: './zahlung.component.css'
 })
 export class ZahlungComponent implements OnInit {
+  private kartenverkaufService = inject(KartenverkaufService);
+  private destroyRef = inject(DestroyRef);
 
-  @Input({required: true})
-  vorstellung!: Vorstellung;
+  readonly vorstellung = input.required<Vorstellung>();
 
-  @Input({required: true})
-  plaetze!: ZusammenhaengendePlaetze;
+  readonly plaetze = input.required<ZusammenhaengendePlaetze>();
 
-  @Output()
-  onZahlungBestaetigt: EventEmitter<Zahlungsvorgang> = new EventEmitter();
+  readonly onZahlungBestaetigt = output<Zahlungsvorgang>();
 
-  gesamtbetrag: Geldbetrag | undefined;
+  readonly gesamtbetrag = signal<Geldbetrag | undefined>(undefined);
 
-  zahlungsvorgang: Zahlungsvorgang | undefined;
+  readonly zahlungsvorgang = signal<Zahlungsvorgang | undefined>(undefined);
 
-  fertig: boolean = false;
+  readonly fertig = signal(false);
 
-  @ViewChild('zahlungDialog')
-  zahlungDialog!: ZahlungdialogComponent;
-
-  constructor(private kartenverkaufService: KartenverkaufService) {
-  }
+  readonly zahlungDialog = viewChild.required<ZahlungdialogComponent>('zahlungDialog');
 
   ngOnInit(): void {
-    this.kartenverkaufService.ermittlePreis(this.vorstellung.uuid, this.plaetze).subscribe((gesamtbetrag: Geldbetrag) => {
-      this.gesamtbetrag = gesamtbetrag
-    });
+    this.kartenverkaufService.ermittlePreis(this.vorstellung().uuid, this.plaetze())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((gesamtbetrag: Geldbetrag) => this.gesamtbetrag.set(gesamtbetrag));
   }
 
   oeffneZahlungDialog() {
-    this.kartenverkaufService.starteZahlungsvorgang(this.vorstellung.uuid, this.plaetze).subscribe((zahlungsvorgang: Zahlungsvorgang) => {
-      this.zahlungsvorgang = zahlungsvorgang;
-      this.zahlungDialog.oeffneDialog(zahlungsvorgang)
-    });
+    this.kartenverkaufService.starteZahlungsvorgang(this.vorstellung().uuid, this.plaetze())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((zahlungsvorgang: Zahlungsvorgang) => {
+        this.zahlungsvorgang.set(zahlungsvorgang);
+        this.zahlungDialog().oeffneDialog(zahlungsvorgang);
+      });
   }
 
   zahlungDialogGeschlossen(zahlungsvorgang: Zahlungsvorgang) {
-    this.kartenverkaufService.bestaetigeZahlung(this.zahlungsvorgang!.auftragsnummer).subscribe((zahlungsstatus: Zahlungsstatus) => {
-      if (zahlungsstatus.status == "Eingegangen") {
-        this.onZahlungBestaetigt.emit(zahlungsvorgang);
-        this.fertig = true;
-      }
-    })
+    this.kartenverkaufService.bestaetigeZahlung(this.zahlungsvorgang()!.auftragsnummer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((zahlungsstatus: Zahlungsstatus) => {
+        if (zahlungsstatus.status == "Eingegangen") {
+          this.onZahlungBestaetigt.emit(zahlungsvorgang);
+          this.fertig.set(true);
+        }
+      });
   }
 
 }

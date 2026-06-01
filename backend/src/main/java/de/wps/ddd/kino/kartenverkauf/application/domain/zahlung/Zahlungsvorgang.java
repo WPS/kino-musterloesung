@@ -1,10 +1,10 @@
 package de.wps.ddd.kino.kartenverkauf.application.domain.zahlung;
 
+import de.wps.ddd.kino.common.error.GeschaeftsregelVerletzt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
-import org.springframework.util.Assert;
 
 @AggregateRoot
 @Getter
@@ -20,12 +20,12 @@ public class Zahlungsvorgang {
     }
 
     public void zahlungEingegangen() {
-        Assert.isTrue(this.status == Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgeschlossen werden.");
+        GeschaeftsregelVerletzt.throwIf(this.status != Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgeschlossen werden.");
         this.status = Zahlungsstatus.Eingegangen;
     }
 
     public void zahlungAbgebrochen() {
-        Assert.isTrue(this.status == Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgebrochen werden.");
+        GeschaeftsregelVerletzt.throwIf(this.status != Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgebrochen werden.");
         this.status = Zahlungsstatus.Abgebrochen;
     }
 }

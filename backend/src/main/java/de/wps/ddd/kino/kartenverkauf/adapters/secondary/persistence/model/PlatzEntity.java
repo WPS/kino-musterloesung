@@ -10,15 +10,20 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "plaetze", schema = "kartenverkauf")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PlatzEntity {
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private Id id;
     private String kategorie;
     private boolean istVerkauft;
