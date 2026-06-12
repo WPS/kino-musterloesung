@@ -71,11 +71,14 @@ class SaalplanDtoMapperTest {
     }
 
     @Test
-    void zusammenhaengendePlaetzeToDto() {
+    void zusammenhaengendePlaetzeToDto_mitPlatz() {
+        // arrange
         var zusammenhaengendePlaetze = new ZusammenhaengendePlaetze(List.of(platzId));
 
+        // act
         var dto = mapper.toDto(zusammenhaengendePlaetze);
 
+        // assert
         assertThat(dto.plaetze()).hasSize(1);
         var platzDto = dto.plaetze().getFirst();
         assertThat(platzDto.reihe()).isEqualTo(reiheNr.nummer());
@@ -83,15 +86,42 @@ class SaalplanDtoMapperTest {
     }
 
     @Test
-    void zusammenhaengendePlaetzeToDomain() {
+    void zusammenhaengendePlaetzeToDto_leer() {
+        // arrange
+        var zusammenhaengendePlaetze = new ZusammenhaengendePlaetze(List.of());
+
+        // act
+        var dto = mapper.toDto(zusammenhaengendePlaetze);
+
+        // assert
+        assertThat(dto.plaetze()).isEmpty();
+    }
+
+    @Test
+    void zusammenhaengendePlaetzeToDomain_mitPlatz() {
+        // arrange
         var zusammenhaengendePlaetzeDto =
                 new ZusammenhaengendePlaetzeDto(List.of(new PlatzIdDto(reiheNr.nummer(), platzNr.nummer())));
 
+        // act
         var plaetze = mapper.toDomain(zusammenhaengendePlaetzeDto);
 
+        // assert
         assertThat(plaetze.plaetze()).hasSize(1);
         var platz = plaetze.plaetze().getFirst();
         assertThat(platz.reihe()).isEqualTo(reiheNr);
         assertThat(platz.platz()).isEqualTo(platzNr);
+    }
+
+    @Test
+    void zusammenhaengendePlaetzeToDomain_leer() {
+        // arrange
+        var zusammenhaengendePlaetzeDto = new ZusammenhaengendePlaetzeDto(List.of());
+
+        // act
+        var plaetze = mapper.toDomain(zusammenhaengendePlaetzeDto);
+
+        // assert
+        assertThat(plaetze.plaetze()).isEmpty();
     }
 }

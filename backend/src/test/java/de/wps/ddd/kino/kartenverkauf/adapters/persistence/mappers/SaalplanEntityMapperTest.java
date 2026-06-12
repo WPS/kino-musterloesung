@@ -9,7 +9,8 @@ import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.PlatzNu
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.ReiheNummer;
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.Saalplan;
 import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.VorstellungId;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,10 +26,16 @@ class SaalplanEntityMapperTest {
     private final ReiheNummer reiheNr = new ReiheNummer(42);
     private final VorstellungId vorstellungId = new VorstellungId(UUID.fromString("a095c8f6-6fa2-4f2e-acf1-52cee0698e74"));
 
-    @Test
-    public void toEntity() {
+    @ParameterizedTest
+    @CsvSource({
+            "Loge,    false",
+            "Loge,    true",
+            "Parkett, false",
+            "Parkett, true",
+    })
+    void toEntity(PlatzKategorie kategorie, boolean istVerkauft) {
         // arrange
-        var plaetze = List.of(new Platz(new PlatzId(reiheNr, platzNr), PlatzKategorie.Loge, false));
+        var plaetze = List.of(new Platz(new PlatzId(reiheNr, platzNr), kategorie, istVerkauft));
         var saalplan = new Saalplan(vorstellungId, plaetze);
 
         // act
@@ -43,15 +50,21 @@ class SaalplanEntityMapperTest {
         assertThat(platzEntity.getId().getSaalplanId()).isEqualTo(saalplanId);
         assertThat(platzEntity.getId().getReihe()).isEqualTo(reiheNr.nummer());
         assertThat(platzEntity.getId().getPlatz()).isEqualTo(platzNr.nummer());
-        assertThat(platzEntity.getKategorie()).isEqualTo("Loge");
-        assertThat(platzEntity.isIstVerkauft()).isFalse();
+        assertThat(platzEntity.getKategorie()).isEqualTo(kategorie.name());
+        assertThat(platzEntity.isIstVerkauft()).isEqualTo(istVerkauft);
     }
 
-    @Test
-    public void toDomain() {
+    @ParameterizedTest
+    @CsvSource({
+            "Loge,    false",
+            "Loge,    true",
+            "Parkett, false",
+            "Parkett, true",
+    })
+    void toDomain(PlatzKategorie kategorie, boolean istVerkauft) {
         // arrange
         var saalplanEntity = new SaalplanEntity(saalplanId, vorstellungId.uuid());
-        saalplanEntity.addPlatz(reiheNr.nummer(), platzNr.nummer(), "Loge", false);
+        saalplanEntity.addPlatz(reiheNr.nummer(), platzNr.nummer(), kategorie.name(), istVerkauft);
 
         // act
         var saalplan = mapper.toDomain(saalplanEntity);
@@ -61,8 +74,8 @@ class SaalplanEntityMapperTest {
         var platz = saalplan.platz(new PlatzId(reiheNr, platzNr));
         assertThat(platz.getId().reihe()).isEqualTo(reiheNr);
         assertThat(platz.getId().platz()).isEqualTo(platzNr);
-        assertThat(platz.getKategorie()).isEqualTo(PlatzKategorie.Loge);
-        assertThat(platz.isIstVerkauft()).isFalse();
+        assertThat(platz.getKategorie()).isEqualTo(kategorie);
+        assertThat(platz.isIstVerkauft()).isEqualTo(istVerkauft);
     }
 
 }

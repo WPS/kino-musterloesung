@@ -5,16 +5,40 @@ Alle erwähnenswerten Änderungen an KinoSoft werden hier festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.1.2] – 2026-06-12
+
+Ausbau der Backend-Testabdeckung und kleinere Korrekturen.
+
+### Hinzugefügt
+
+- Umfassende Testabdeckung für das Backend (`common`, `filmauswahl`, `kartenverkauf`)
+
+### Geändert
+
+- Application-Service-Tests auf `@SpringBootTest` umgestellt; Teststil vereinheitlicht
+- Integrationstests (`*IntegrationTest`) per Failsafe in die `verify`-Phase separiert
+- Regel „mindestens ein Platz" von `Platzanzahl` nach `Saalplan.sucheZusammenhaengendePlaetze` verschoben
+- `throwIf` → `wenn` in den `common.error`-Klassen
+- `@AllArgsConstructor` an den Filmauswahl-Entities für den Testdatenaufbau
+- `spring-boot-starter-webmvc-test` als Test-Dependency ergänzt
+
+### Behoben
+
+- `AktuelleVorstellungen.holeVorstellung` wirft bei unbekannter `VorstellungId` nun `RessourceNichtGefunden` (HTTP 404)
+  statt `NoSuchElementException` (HTTP 500)
+
 ## [0.1.1] – 2026-06-01
 
 Versions-Updates und Modernisierung des Codes.
 
 ### Hinzugefügt
+
 - `CHANGELOG.md` zur Dokumentation der Änderungen pro Release
 - Domain-Exceptions mit `ProblemDetail`-basierter Fehlerbehandlung im Backend
 - Glossar der Ubiquitous Language für beide Bounded Contexts in `docs/Glossar.md`
 
 ### Geändert
+
 - Frontend auf **Angular 21.2.14** aktualisiert
 - Komponenten auf **Signal-API** migriert
 - Constructor-Injection durch `inject()`-Funktion ersetzt
@@ -34,6 +58,7 @@ Versions-Updates und Modernisierung des Codes.
 Erste Veröffentlichung der DDD-Fallstudie KinoSoft.
 
 ### Hinzugefügt
+
 - README mit Domain-Story zum Kartenverkauf-Prozess
 - Zwei Bounded Contexts mit unterschiedlichen Architekturstilen:
   **Filmauswahl** (Schichtenarchitektur) und **Kartenverkauf**

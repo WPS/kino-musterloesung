@@ -18,7 +18,7 @@ public class SaalplanStapelImpl implements SaalplanStapel {
 
     public Saalplan holeSaalplan(VorstellungId vorstellungId) {
         SaalplanEntity saalplanEntity = saalplanRepository.findByVorstellungUUID(vorstellungId.uuid());
-        RessourceNichtGefunden.throwIf(saalplanEntity == null, "Saalplan zu Vorstellung " + vorstellungId + " existiert nicht");
+        RessourceNichtGefunden.wenn(saalplanEntity == null, "Saalplan zu Vorstellung " + vorstellungId + " existiert nicht");
         return saalplanMapper.toDomain(saalplanEntity);
     }
 

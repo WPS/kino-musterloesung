@@ -1,9 +1,13 @@
 stages:
   - build
   - test
+  - sbom-generation
+  - sbom-upload
 
 .backend:
   image: maven:3.9.11-eclipse-temurin-25
+  artifacts:
+    expire_in: 3 hours
   cache:
     - key: m2_cache
       paths:
@@ -26,6 +30,8 @@ stages:
 
 .frontend:
   image: node:24.11.0
+  artifacts:
+    expire_in: 3 hours
   before_script:
     - cd frontend
     - npm ci --cache .npm
@@ -33,6 +39,27 @@ stages:
     - key: npm_cache
       paths:
         - frontend/.npm/
+
+.on-tag:
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+
+.on-main-or-tag:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+
+.sbom-upload:
+  stage: sbom-upload
+  image: curlimages/curl:latest
+  script:
+    - cd $PATH_TO_BOM_JSON_DIRECTORY
+    - "curl -v --fail-with-body $DEPENDENCY_TRACK_API_URL
+        -H \"Content-Type: multipart/form-data\"
+        -H \"X-API-Key: $DEPENDENCY_TRACK_API_KEY\"
+        -F \"projectName=$DEPENDENCY_TRACK_PROJECT_NAME\"
+        -F \"projectVersion=$DEPENDENCY_TRACK_PROJECT_VERSION\"
+        -F \"bom=@bom.json\""
 
 build:backend:
   extends: .backend
@@ -42,7 +69,6 @@ build:backend:
   artifacts:
     paths:
       - backend/target/
-    expire_in: 1 hour
 
 build:frontend:
   extends: .frontend
@@ -52,7 +78,6 @@ build:frontend:
   artifacts:
     paths:
       - frontend/dist/
-    expire_in: 1 hour
 
 test:backend:
   extends: .backend
@@ -60,12 +85,13 @@ test:backend:
   dependencies:
     - build:backend
   script:
-    - mvn $MAVEN_CLI_OPTS -pl backend test
+    - mvn $MAVEN_CLI_OPTS -pl backend verify -Djib.skip=true
   artifacts:
     when: always
     reports:
       junit:
         - backend/target/surefire-reports/TEST-*.xml
+        - backend/target/failsafe-reports/TEST-*.xml
 
 test:frontend:
   extends: .frontend
@@ -74,3 +100,74 @@ test:frontend:
     - build:frontend
   script:
     - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - frontend/junit.xml
+
+sbom-generation:backend:
+  extends:
+    - .backend
+    - .on-main-or-tag
+  stage: sbom-generation
+  script:
+    - mvn $MAVEN_CLI_OPTS -pl backend cyclonedx:makeAggregateBom
+  artifacts:
+    paths:
+      - backend/target/.bom/
+
+sbom-generation:frontend:
+  extends:
+    - .frontend
+    - .on-main-or-tag
+  stage: sbom-generation
+  script:
+    - npm run sbom
+  artifacts:
+    paths:
+      - frontend/dist/.bom/
+
+sbom-upload-dev:backend:
+  extends:
+    - .sbom-upload
+    - .on-main-or-tag
+  dependencies:
+    - sbom-generation:backend
+  variables:
+    DEPENDENCY_TRACK_PROJECT_NAME: "kino_backend"
+    DEPENDENCY_TRACK_PROJECT_VERSION: "dev"
+    PATH_TO_BOM_JSON_DIRECTORY: backend/target/.bom
+
+sbom-upload-dev:frontend:
+  extends:
+    - .sbom-upload
+    - .on-main-or-tag
+  dependencies:
+    - sbom-generation:frontend
+  variables:
+    DEPENDENCY_TRACK_PROJECT_NAME: "kino_frontend"
+    DEPENDENCY_TRACK_PROJECT_VERSION: "dev"
+    PATH_TO_BOM_JSON_DIRECTORY: frontend/dist/.bom
+
+sbom-upload-public:backend:
+  extends:
+    - .sbom-upload
+    - .on-tag
+  dependencies:
+    - sbom-generation:backend
+  variables:
+    DEPENDENCY_TRACK_PROJECT_NAME: "kino_backend"
+    DEPENDENCY_TRACK_PROJECT_VERSION: "public"
+    PATH_TO_BOM_JSON_DIRECTORY: backend/target/.bom
+
+sbom-upload-public:frontend:
+  extends:
+    - .sbom-upload
+    - .on-tag
+  dependencies:
+    - sbom-generation:frontend
+  variables:
+    DEPENDENCY_TRACK_PROJECT_NAME: "kino_frontend"
+    DEPENDENCY_TRACK_PROJECT_VERSION: "public"
+    PATH_TO_BOM_JSON_DIRECTORY: frontend/dist/.bom

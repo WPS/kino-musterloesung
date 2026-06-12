@@ -1,6 +1,7 @@
 package de.wps.ddd.kino.kartenverkauf.adapters.persistence.repositories;
 
 
+import de.wps.ddd.kino.common.error.RessourceNichtGefunden;
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.Platz;
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.PlatzId;
 import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.PlatzKategorie;
@@ -17,9 +18,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class SaalplanStapelTest {
+class SaalplanStapelIntegrationTest {
 
     @Autowired
     private SaalplanStapel saalplanStapel;
@@ -27,7 +29,7 @@ class SaalplanStapelTest {
     private final VorstellungId vorstellungId = new VorstellungId(UUID.fromString("f142de00-f3ec-4a42-9493-d406b3062b4a"));
 
     @Test
-    public void holeSaalplan() {
+    void holeSaalplan_bekannteVorstellung_liefertSaalplan() {
         // act
         var saalplan = saalplanStapel.holeSaalplan(vorstellungId);
 
@@ -42,7 +44,18 @@ class SaalplanStapelTest {
     }
 
     @Test
-    public void legeZurueck_geaenderterSaalplan() {
+    void holeSaalplan_unbekannteVorstellung_wirftRessourceNichtGefunden() {
+        // arrange
+        var unbekannteVorstellungId = new VorstellungId(UUID.randomUUID());
+
+        // act / assert
+        assertThatThrownBy(() -> saalplanStapel.holeSaalplan(unbekannteVorstellungId))
+                .isInstanceOf(RessourceNichtGefunden.class)
+                .hasMessageContaining("existiert nicht");
+    }
+
+    @Test
+    void legeZurueck_geaenderterSaalplan() {
         // arrange
         var saalplan = saalplanStapel.holeSaalplan(vorstellungId);
         var platzId = new PlatzId(new ReiheNummer(2), new PlatzNummer(3));
@@ -58,7 +71,7 @@ class SaalplanStapelTest {
     }
 
     @Test
-    public void legeZurueck_neuerSaalplan() {
+    void legeZurueck_neuerSaalplan() {
         // arrange
         var vorstellungId = new VorstellungId(UUID.randomUUID());
         var platzId = new PlatzId(new ReiheNummer(1), new PlatzNummer(1));

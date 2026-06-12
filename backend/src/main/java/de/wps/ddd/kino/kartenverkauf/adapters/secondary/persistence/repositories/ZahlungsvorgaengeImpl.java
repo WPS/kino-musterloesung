@@ -25,7 +25,7 @@ public class ZahlungsvorgaengeImpl implements Zahlungsvorgaenge {
     @Override
     public Zahlungsvorgang hole(Auftragsnummer auftragsnummer) {
         var entity = zahlungsvorgangRepository.findById(auftragsnummer.nummer());
-        RessourceNichtGefunden.throwIf(entity.isEmpty(), "Zahlungsvorgang " + auftragsnummer + " existiert nicht");
+        RessourceNichtGefunden.wenn(entity.isEmpty(), "Zahlungsvorgang " + auftragsnummer + " existiert nicht");
         return zahlungsvorgangMapper.toDomain(entity.get());
     }
 

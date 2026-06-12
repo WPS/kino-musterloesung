@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:ci": "ng test --watch=false",
-    "sbom": "cyclonedx-npm --output-file .bom/bom.json --spec-version 1.6 --output-reproducible --no-validate"
+    "test:ci": "ng test --watch=false --configuration=ci",
+    "sbom": "cyclonedx-npm --ignore-npm-errors --output-file dist/.bom/bom.json --spec-version 1.6 --output-reproducible --no-validate"
   },
   "private": true,
   "dependencies": {

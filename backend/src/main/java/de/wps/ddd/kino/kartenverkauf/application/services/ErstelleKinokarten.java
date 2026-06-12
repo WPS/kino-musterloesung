@@ -31,7 +31,7 @@ class ErstelleKinokarten implements de.wps.ddd.kino.kartenverkauf.application.po
 
     @Override
     public List<Kinokarte> fuer(Auftragsnummer auftragsnummer, VorstellungId vorstellungId, ZusammenhaengendePlaetze gewaehltePlaetze) {
-        GeschaeftsregelVerletzt.throwIf(zahlung.status(auftragsnummer) != Zahlungsstatus.Eingegangen, "Zahlung ist noch nicht eingegangen");
+        GeschaeftsregelVerletzt.wenn(zahlung.status(auftragsnummer) != Zahlungsstatus.Eingegangen, "Zahlung ist noch nicht eingegangen");
         var vorstellung = aktuelleVorstellungen.holeVorstellung(vorstellungId);
         var kinokarten = kartenBlock.erstelleKarten(vorstellung, gewaehltePlaetze);
         var saalplan = saalplanStapel.holeSaalplan(vorstellungId);

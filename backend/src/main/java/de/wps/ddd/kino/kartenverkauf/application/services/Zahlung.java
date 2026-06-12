@@ -8,7 +8,6 @@ import de.wps.ddd.kino.kartenverkauf.application.domain.zahlung.ZahlungAbgebroch
 import de.wps.ddd.kino.kartenverkauf.application.domain.zahlung.ZahlungEingegangen;
 import de.wps.ddd.kino.kartenverkauf.application.domain.zahlung.Zahlungsstatus;
 import de.wps.ddd.kino.kartenverkauf.application.domain.zahlung.Zahlungsvorgang;
-import de.wps.ddd.kino.kartenverkauf.application.ports.primary.Zahlung;
 import de.wps.ddd.kino.kartenverkauf.application.ports.secondary.Zahlungsvorgaenge;
 import lombok.RequiredArgsConstructor;
 import org.jmolecules.event.annotation.DomainEventHandler;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ZahlungImpl implements Zahlung {
+public class Zahlung implements de.wps.ddd.kino.kartenverkauf.application.ports.primary.Zahlung {
 
     private final Zahlungsvorgaenge zahlungsvorgaenge;
 

@@ -1,5 +1,6 @@
 package de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe;
 
+import de.wps.ddd.kino.common.error.GeschaeftsregelVerletzt;
 import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.Vorstellung;
 import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.VorstellungId;
 import lombok.Getter;
@@ -44,6 +45,7 @@ public class Saalplan {
      * @return die ersten freien zusammenhängenden Plätze startend von der hintersten Reihe oder eine leere Liste, wenn es keine anzahlPlaetze zusammenhängenden Plätze gibt
      */
     public ZusammenhaengendePlaetze sucheZusammenhaengendePlaetze(Platzanzahl anzahlPlaetze) {
+        GeschaeftsregelVerletzt.wenn(anzahlPlaetze.value() < 1, "Mindestens ein Platz muss angefragt werden.");
         var result = new ArrayList<PlatzId>();
         for (var reihe : plaetze.descendingMap().values()) {
             for (Platz platz : reihe.values()) {

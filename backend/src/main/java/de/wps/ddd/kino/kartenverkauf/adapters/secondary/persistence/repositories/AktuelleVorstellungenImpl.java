@@ -1,5 +1,6 @@
 package de.wps.ddd.kino.kartenverkauf.adapters.secondary.persistence.repositories;
 
+import de.wps.ddd.kino.common.error.RessourceNichtGefunden;
 import de.wps.ddd.kino.kartenverkauf.adapters.secondary.persistence.mappers.VorstellungEntityMapper;
 import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.Vorstellung;
 import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.VorstellungId;
@@ -26,6 +27,7 @@ public class AktuelleVorstellungenImpl implements AktuelleVorstellungen {
     @Override
     public Vorstellung holeVorstellung(VorstellungId vorstellungId) {
         var vorstellung = vorstellungRepository.findById(vorstellungId.uuid());
-        return vorstellung.map(vorstellungMapper::toDomain).orElseThrow();
+        RessourceNichtGefunden.wenn(vorstellung.isEmpty(), "Vorstellung zu " + vorstellungId + " existiert nicht");
+        return vorstellungMapper.toDomain(vorstellung.get());
     }
 }

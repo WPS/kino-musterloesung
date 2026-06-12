@@ -20,12 +20,12 @@ public class Zahlungsvorgang {
     }
 
     public void zahlungEingegangen() {
-        GeschaeftsregelVerletzt.throwIf(this.status != Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgeschlossen werden.");
+        GeschaeftsregelVerletzt.wenn(this.status != Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgeschlossen werden.");
         this.status = Zahlungsstatus.Eingegangen;
     }
 
     public void zahlungAbgebrochen() {
-        GeschaeftsregelVerletzt.throwIf(this.status != Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgebrochen werden.");
+        GeschaeftsregelVerletzt.wenn(this.status != Zahlungsstatus.Ausstehend, "Nur ausstehende Zahlungsvorgänge können abgebrochen werden.");
         this.status = Zahlungsstatus.Abgebrochen;
     }
 }

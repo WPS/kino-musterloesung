@@ -22,6 +22,7 @@
         <jmolecules.version>2.0.1</jmolecules.version>
         <jmolecules-archunit.version>0.33.0</jmolecules-archunit.version>
         <archunit.version>1.4.2</archunit.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <jib.version>3.5.1</jib.version>
         <jib.console>plain</jib.console>
         <cyclonedx.version>2.9.1</cyclonedx.version>
@@ -61,6 +62,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -110,6 +117,38 @@
                 <version>${spring-boot.version}</version>
             </plugin>
 
+            <!-- Unit-Tests (test-Phase): Integrationstests ausschließen -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IntegrationTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Integrationstests (integration-test/verify-Phase) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*IntegrationTest.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -147,19 +186,14 @@
                 </configuration>
             </plugin>
 
-            <!-- SBOM generation -->
+            <!-- SBOM generation: invoked explicitly via `mvn cyclonedx:makeAggregateBom` -->
             <plugin>
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <version>${cyclonedx.version}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>makeAggregateBom</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/.bom</outputDirectory>
+                </configuration>
             </plugin>
 
         </plugins>

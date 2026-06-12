@@ -6,6 +6,6 @@ import org.springframework.util.Assert;
 @ValueObject
 public record Platzanzahl(int value) {
     public Platzanzahl {
-        Assert.isTrue(value > 0, "Mindestens ein Platz muss angefragt werden.");
+        Assert.isTrue(value >= 0, "Platzanzahl darf nicht negativ sein.");
     }
 }

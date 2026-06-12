@@ -78,6 +78,11 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "buildTarget": "frontend:build:development"
+          },
+          "configurations": {
+            "ci": {
+              "reporters": ["default", ["junit", { "outputFile": "junit.xml" }]]
+            }
           }
         }
       },

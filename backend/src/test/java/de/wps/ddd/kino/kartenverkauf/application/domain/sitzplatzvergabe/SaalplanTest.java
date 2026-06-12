@@ -1,13 +1,6 @@
-package de.wps.ddd.kino.kartenverkauf.domain;
+package de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe;
 
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.Platz;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.PlatzId;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.PlatzKategorie;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.PlatzNummer;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.Platzanzahl;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.ReiheNummer;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.Saalplan;
-import de.wps.ddd.kino.kartenverkauf.application.domain.sitzplatzvergabe.ZusammenhaengendePlaetze;
+import de.wps.ddd.kino.common.error.GeschaeftsregelVerletzt;
 import de.wps.ddd.kino.kartenverkauf.application.domain.vorstellungen.VorstellungId;
 import org.junit.jupiter.api.Test;
 
@@ -15,13 +8,14 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SaalplanTest {
+class SaalplanTest {
 
     private final VorstellungId vorstellungId = new VorstellungId(UUID.fromString("a095c8f6-6fa2-4f2e-acf1-52cee0698e74"));
 
     @Test
-    public void sucheZusammenhaengendePlaetze_existsZusammenhaengendePlaetzeInSecondToLastReihe_returnsCorrectPlaetze() {
+    void sucheZusammenhaengendePlaetze_zusammenhaengendePlaetzeInVorletzterReihe_liefertPlaetze() {
         // arrange
         var anzahlGewuenschtePlaetze = 4;
         var vorletzteReihe = 3;
@@ -46,7 +40,7 @@ public class SaalplanTest {
     }
 
     @Test
-    public void sucheZusammenhaengendePlaetze_doesNotExistZusammenhaengendePlaetze_returnsObjectWithEmptyList() {
+    void sucheZusammenhaengendePlaetze_keineZusammenhaengendenPlaetze_liefertLeereListe() {
         // arrange — nur isolierte freie Plaetze, keine zwei zusammenhaengend
         var saalplan = new Saalplan(vorstellungId, List.of(
                 frei(1, 1), verkauft(1, 2), verkauft(1, 3), verkauft(1, 4), verkauft(1, 5), verkauft(1, 6),
@@ -60,7 +54,18 @@ public class SaalplanTest {
     }
 
     @Test
-    public void markiereAlsVerkauft() {
+    void sucheZusammenhaengendePlaetze_keinePlaetzeAngefragt_wirftException() {
+        // arrange
+        var saalplan = new Saalplan(vorstellungId, List.of(frei(1, 1), frei(1, 2), frei(1, 3)));
+
+        // act / assert
+        assertThatThrownBy(() -> saalplan.sucheZusammenhaengendePlaetze(new Platzanzahl(0)))
+                .isInstanceOf(GeschaeftsregelVerletzt.class)
+                .hasMessageContaining("Mindestens ein Platz muss angefragt werden");
+    }
+
+    @Test
+    void markiereAlsVerkauft_markiertZusammenhaengendePlaetzeAlsVerkauft() {
         // arrange
         var saalplan = new Saalplan(vorstellungId, List.of(frei(1, 1), frei(1, 2), frei(1, 3)));
         var zuVerkaufen = new ZusammenhaengendePlaetze(List.of(platzId(1, 1), platzId(1, 2), platzId(1, 3)));

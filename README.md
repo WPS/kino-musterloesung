@@ -86,8 +86,10 @@ Das Frontend basiert u.a. auf folgenden Technologien:
 - TailwindCSS
 - DaisyUI
 
-Die vollständige SBOM (Software Bill of Materials) wird mit maven package generiert und unter `backend/target/bom.xml`
-bzw. `frontend/dist/frontend/.bom/bom.xml` abgelegt.
+Die vollständige SBOM (Software Bill of Materials) wird bei Bedarf erzeugt – im Backend mit
+`./mvnw -pl backend cyclonedx:makeAggregateBom` (nach `backend/target/.bom/bom.json` bzw. `bom.xml`), im Frontend mit
+`cd frontend && npm run sbom` (nach `frontend/dist/.bom/bom.json`). In der CI werden die SBOMs bei jedem Commit auf
+`main` automatisch in der `sbom`-Stage erzeugt und anschließend nach Dependency Track hochgeladen.
 
 ## Architektur
 
